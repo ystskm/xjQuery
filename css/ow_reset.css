@@ -1,0 +1,27 @@
+body {
+	color:#000000;
+	min-height:100%;
+	text-align: left;
+	font:13px/20px arial,"Helvetica Neue",verdana,sans-serif,Helvetica;
+}
+ul, ol, li, dl, dt, dd{
+	list-style: none outside none;
+	outline: medium none;
+}
+h1, h2, h3, h4, h5, h6 {
+}
+table {
+	border-collapse:collapse;
+}
+td {
+	font-weight:normal;
+}
+img {
+	border:0 none;
+}
+a {
+	cursor: pointer; cursor: hand;
+}
+input[type="button"]{
+	cursor: pointer; cursor: hand;
+}

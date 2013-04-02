@@ -1,0 +1,27 @@
+@import "reset.css";
+@import "ow_reset.css";
+
+/* xjbase DEFAULT */
+
+/* TAG */
+.xj {
+	font-weight:normal;
+}
+
+.xj a {
+	text-decoration:none;
+}
+
+.xj a:focus{
+	outline:0px none;    /*  firefox */
+	outline-color:transparent;        /*  chrome  */
+}
+
+.xj input[disabled],.xj textarea[disabled]{
+	color:#000;
+	background-color:#fcfcfc;
+}
+
+.xj input:focus{
+	outline:0px solid #f00;    /*  fire fox */
+}
