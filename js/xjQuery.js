@@ -292,6 +292,9 @@ window.xjQuery
           os = "Android", osver = RegExp.$1;
           device = "mobile";
         }
+      } else if(/Android;/i.test(ua)) {
+        // add for Firefox 20
+        os = "Android";
       } else if(/BSD/.test(ua)) {
         if(/FreeBSD/.test(ua)) {
           os = "FreeBSD";
@@ -334,6 +337,8 @@ window.xjQuery
         else if(/WinNT/.test(ua))
           osver = "NT";
       } else if(/Mac/.test(ua)) {
+        // Mozilla/5.0 (iPad; CPU OS 6_1_3 like Mac OS X) AppleWebKit/536.26 
+        // (KHTML, like Gecko) CriOS/26.0.1410.50 Mobile/10B329 Safari/8536.25
         if(/iPod/.test(ua)) {
           os = "iPod";
           device = "mobile";
@@ -358,6 +363,12 @@ window.xjQuery
       } else if(/DreamPassport/.test(ua)) {
         os = "DreamPassport";
       }
+      // TODO check tablet firefox
+      if(device != 'tablet' && /Mobile/.test(ua)) {
+        // add for Firefox 20
+        device = "mobile";
+      }
+
       return {
         Browser: bws,
         BrowserVersion: bwsver,

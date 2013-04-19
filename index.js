@@ -11,13 +11,14 @@
   var _C = global.EXTERNAL_CONDITION || {}, Cons = {
     Version: _C.xjQuery_version,
     HttpRoot: _C.http_root || '/',
+    DircName: _C.xjQuery_dirname || 'xjQuery',
     Xjquery: 'xjQuery',
     Js: 'js',
     Plugind: 'plugins'
   };
 
-  var d = __dirname.split('/').slice(0, -1).join('/'), n = __dirname.split('/')
-      .slice(-1).toString(), r = '', p = require('path');
+  var d = __dirname.split('/').slice(0, -1).join('/'), n = Cons.DircName;
+  var r = '', p = require('path');
 
   var js = Cons.Js, Files = {
     xjq: Cons.Xjquery
@@ -41,6 +42,8 @@
     options = mixin({}, options);
     if(target == 'root')
       target = options.withroot = 'root';
+    if(options.withroot == true)
+      options.withroot = 'root';
     return makePath(target, options);
   }
 
@@ -69,7 +72,7 @@
     if(options.withroot) {
       prefix = Cons.HttpRoot, options.withname = true;
       switch(options.withroot) {
-      case true:
+      case 'root':
         prefix = d;
         break;
       }
