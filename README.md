@@ -15,7 +15,7 @@
 [On Browser]
 Use with <script/> tag
 
-	<script type="application/javascript" src="https://github.com/ystskm/xjQuery/blob/master/js/xjQuery.js"></script>
+	<script type="application/javascript" src="https://raw.github.com/ystskm/xjQuery/master/js/xjQuery.js"></script>
 
 [On Node]
 To install the most recent release from npm, run:
