@@ -1,5 +1,2 @@
 .project
 .settings
-build.xml
-release.sh
-release-LICENSE
