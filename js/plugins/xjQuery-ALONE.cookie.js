@@ -7,6 +7,10 @@ $(function() {
     cookieExpire: cookieExpire
   });
 
+  // emit ready
+  var place = 'ALONEcookie';
+  $xj.data('readystatus', place, 'ready'), $xj.trigger('ready', place);
+
   function cookie(name, value, storage) {
 
     if(typeof value == 'boolean')
@@ -101,8 +105,5 @@ $(function() {
     return CookieExpire;
 
   }
-
-  var place = 'ALONEcookie';
-  $xj.data('readystatus', place, 'ready'), $xj.trigger('ready', place);
 
 });

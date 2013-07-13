@@ -5,125 +5,29 @@
  *  ----------------
  */
 $(function() {
+
   var _Css = null, _CssNo = null;
+  cssRead();
+
   $xj.extend(xjQuery, 'JSCSS', {
-    cssRead: function() {
-      var i = null, j = null, cssa = {};
-      var css_list = document.styleSheets;
-      if(css_list)
-        for(i = 0; i < css_list.length; i++) {
-          var rule_list;
-          try { // for security error 1000
-            rule_list = (css_list[i].cssRules) ? css_list[i].cssRules
-              : css_list[i].rules;
-            _CssNo = i;
-          } catch(e) {
-            continue;
-          }
-          if(rule_list)
-            for(j = 0; j < rule_list.length; j++) {
-              if(rule_list[j].selectorText)
-                cssa[rule_list[j].selectorText] = {
-                  index: i,
-                  subIndex: j,
-                  style: rule_list[j]
-                };
-              else
-                continue;
-            }
-        }
-      return _Css = cssa;
-    },
-    putCss: function(a) {
-      console.warn('putCss will be deplicatied. Use cssPut.');
-      this.cssPut(a);
-    },
-    cssPut: function(a, noCross) {
-      // e.g. var a={'html':{backgroundColor:bgcolor}} 
-      var i = null, j = null;
-      if(!a)
-        return;
-      for(i in a) {
-        var exist = _Css[i];
-        // TODO check bug ( now, sheets are always increased ? )
-        var sheet = exist ? document.styleSheets[exist['index']]
-          : document.styleSheets[_CssNo || 0];
-        if(!sheet) {
-          if(document.createStyleSheet)
-            sheet = document.createStyleSheet();
-          else {
-            var head = document.getElementsByTagName('head')[0];
-            if(!head) {
-              console.log("cannot set style via cssPut");
-              return false;
-            } else {
-              var sty = document.createElement('style');
-              head.appendChild(sty);
-              sheet = sty.sheet;
-            }
-          }
-        } else if(exist) {
-          // TODO check bug
-          var sty = exist.style['style'];
-          for(j = 0; j < sty.length; j++) {
-            if(!a[i][sty[j]])
-              a[i][sty[j]] = sty.cssText.replace(new RegExp('(^|;)' + sty[j]
-                + ':([^;]+);'), function(match, cssKey, cssValue) {
-                return cssValue;
-              });
-          }
-          if(sheet.deleteRule)
-            sheet.deleteRule(exist['subIndex']);
-          else if(sheet.removeRule)
-            sheet.removeRule(exist['subIndex']);
-        }
-        /*
-        for(var j in a[i]) {
-          try {
-            // http://www.quirksmode.org/dom/w3c_css.html
-            if(sheet.addRule) { // Internet Explorer ,Chrome ,Safari
-              sheet.addRule(i, [j, ':', a[i][j]].join(""), 0);
-            } else if(sheet.insertRule) { // Firefox, Opera
-              sheet.insertRule([i, ' {', j, ':', a[i][j], '}'].join(""), 0);
-            }
-          } catch(e) {
-            console.log(e);
-          }
-        }*/
-        var csses = noCross ? a[i]: xjQuery.JSCSS.crossCss(a[i]), cssStr = "";
-        for( var j in csses)
-          cssStr += j + ':' + csses[j] + ';';
-        try {
-          // http://www.quirksmode.org/dom/w3c_css.html
-          if(sheet.addRule) { // Internet Explorer ,Chrome ,Safari
-            sheet.addRule(i, cssStr);
-          } else if(sheet.insertRule) { // Firefox, Opera
-            sheet.insertRule([i, ' {', cssStr, '}'].join(""), 0);
-          }
-        } catch(e) {
-          console.log(e);
-        }
-        xjQuery.JSCSS.cssRead();
-      }
-    }
+    cssRead: cssRead,
+    cssPut: cssPut,
+    putCss: putCss
   });
-  if(!_Css)
-    xjQuery.JSCSS.cssRead();
 
   //overwrite jquery.prototype.css
-  (function(window) {
-    var _ex_css = $.fn.css;
-    var ex_css = function() {
+  (function(window, $) {
 
+    var $css = $.fn.css, ex_css = function() {
       // original $.fn.css
       if(typeof arguments[0] != 'boolean') {
         switch(arguments.length) {
         case 2:
-          return _ex_css.call(this, arguments[0], arguments[1]);
+          return $css.call(this, arguments[0], arguments[1]);
         case 1:
-          return _ex_css.call(this, arguments[0]);
+          return $css.call(this, arguments[0]);
         default:
-          return _ex_css.apply(this, arguments);
+          return $css.apply(this, arguments);
         }
       }
 
@@ -223,11 +127,115 @@ $(function() {
         // deset style
         this.removeAttr('style');
       }
-      return _ex_css.call(this, styles);
+      return $css.call(this, styles);
     };
     $.fn.css = ex_css;
+  })(window, window.jQuery);
 
-    $xj.triggerReady('EXTENDjscss');
+  // emit ready
+  var place = 'EXTENDjscss';
+  $xj.data('readystatus', place, 'ready'), $xj.trigger('ready', place);
 
-  })();
+  function cssRead() {
+    var i = null, j = null, cssa = {};
+    var css_list = document.styleSheets;
+    if(css_list)
+      for(i = 0; i < css_list.length; i++) {
+        var rule_list;
+        try { // for security error 1000
+          rule_list = (css_list[i].cssRules) ? css_list[i].cssRules
+            : css_list[i].rules;
+          _CssNo = i;
+        } catch(e) {
+          continue;
+        }
+        if(rule_list)
+          for(j = 0; j < rule_list.length; j++) {
+            if(rule_list[j].selectorText)
+              cssa[rule_list[j].selectorText] = {
+                index: i,
+                subIndex: j,
+                style: rule_list[j]
+              };
+            else
+              continue;
+          }
+      }
+    return _Css = cssa;
+  }
+
+  function putCss(a) {
+    console.warn('putCss will be deplicatied. Use cssPut.');
+    this.cssPut(a);
+  }
+
+  function cssPut(a, noCross) {
+    // e.g. var a={'html':{backgroundColor:bgcolor}} 
+    var i = null, j = null;
+    if(!a)
+      return;
+    for(i in a) {
+      var exist = _Css[i];
+      // TODO check bug ( now, sheets are always increased ? )
+      var sheet = exist ? document.styleSheets[exist['index']]
+        : document.styleSheets[_CssNo || 0];
+      if(!sheet) {
+        if(document.createStyleSheet)
+          sheet = document.createStyleSheet();
+        else {
+          var head = document.getElementsByTagName('head')[0];
+          if(!head) {
+            console.log("cannot set style via cssPut");
+            return false;
+          } else {
+            var sty = document.createElement('style');
+            head.appendChild(sty);
+            sheet = sty.sheet;
+          }
+        }
+      } else if(exist) {
+        // TODO check bug
+        var sty = exist.style['style'];
+        for(j = 0; j < sty.length; j++) {
+          if(!a[i][sty[j]])
+            a[i][sty[j]] = sty.cssText.replace(new RegExp('(^|;)' + sty[j]
+              + ':([^;]+);'), function(match, cssKey, cssValue) {
+              return cssValue;
+            });
+        }
+        if(sheet.deleteRule)
+          sheet.deleteRule(exist['subIndex']);
+        else if(sheet.removeRule)
+          sheet.removeRule(exist['subIndex']);
+      }
+      /*
+      for(var j in a[i]) {
+        try {
+          // http://www.quirksmode.org/dom/w3c_css.html
+          if(sheet.addRule) { // Internet Explorer ,Chrome ,Safari
+            sheet.addRule(i, [j, ':', a[i][j]].join(""), 0);
+          } else if(sheet.insertRule) { // Firefox, Opera
+            sheet.insertRule([i, ' {', j, ':', a[i][j], '}'].join(""), 0);
+          }
+        } catch(e) {
+          console.log(e);
+        }
+      }*/
+      var csses = noCross ? a[i]: xjQuery.JSCSS.crossCss(a[i]), cssStr = "";
+      for( var j in csses)
+        cssStr += j + ':' + csses[j] + ';';
+      try {
+        // http://www.quirksmode.org/dom/w3c_css.html
+        if(sheet.addRule) { // Internet Explorer ,Chrome ,Safari
+          sheet.addRule(i, cssStr);
+        } else if(sheet.insertRule) { // Firefox, Opera
+          sheet.insertRule([i, ' {', cssStr, '}'].join(""), 0);
+        }
+      } catch(e) {
+        console.log(e);
+      }
+      cssRead();
+    }
+  }
+
 });
