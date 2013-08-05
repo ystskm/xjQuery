@@ -1,7 +1,7 @@
 {
   "name": "xjQuery",
   "description": "extender of jQuery for foonyah architecture.",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "author": "ystskm <brilliantpenguin@gmail.com> | ystk_skm@twitter",
   "repository": {
         "type": "git",
