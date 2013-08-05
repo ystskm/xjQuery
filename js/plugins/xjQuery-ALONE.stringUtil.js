@@ -165,14 +165,14 @@ $(function() {
       JSON.parse(s);
       return s;
     } catch(e) {
-      s = s.replace(/({|\[|,|:)[\t\s]*'/g, function() {
-        return RegExp.$1 + '"';
+      s = s.replace(/({|\[|,|:)[\t\s]*'/g, function($0, $1) {
+        return $1 + '"';
       });
-      s = s.replace(/'[\t\s]*(}|\]|,|:)/g, function() {
-        return '"' + RegExp.$1;
+      s = s.replace(/'[\t\s]*(}|\]|,|:)/g, function($0, $1) {
+        return '"' + $1;
       });
-      s = s.replace(/({|,)[\t\s]*([\w]+)[\t\s]*:/g, function() {
-        return RegExp.$1 + '"' + RegExp.$2 + '":';
+      s = s.replace(/({|,)[\t\s]*([\w]+)[\t\s]*:/g, function($0, $1, $2) {
+        return $1 + '"' + $2 + '":';
       });
     }
 

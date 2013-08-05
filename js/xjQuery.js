@@ -1,20 +1,19 @@
 /*!
- * xjQuery JavaScript Library v0.1.4 rev.8959
+ * xjQuery JavaScript Library v0.1.4 rev.8969
  *
  * Copyright 2013 Yoshitaka Sakamoto <brilliantpenguin@gmail.com>
  * Released under the MIT license
  * http://github.com/ystskm/xjQuery/blob/master/LICENSE.md
  *
- * Date: 2013-08-05 10:26:11
- */;
-window.xjQuery
+ * Date: 2013-08-05 15:33:28
+ */window.xjQuery
   && window.xjQuery.version
   || (function(window, $) {
 
     // debug function set
-    var debug = window && typeof window.debug == 'function' ? window
-        .debug('xjQuery'): function() {
-    };
+    var debug = typeof window.debug == 'function' ? window.debug('xjQuery')
+      : function() {
+      };
 
     // for response debug
     var mem = Date.now();
@@ -83,7 +82,7 @@ window.xjQuery
       },
 
       version: '0.1.4',
-      release: '2013-08-05 10:26:11',
+      release: '2013-08-05 15:33:28',
 
       workon: typeof global == 'undefined' ? 'Browser': 'Node',
       data: function(name, place, val) {
@@ -264,7 +263,7 @@ window.xjQuery
           bwsver = mtc[1].slice("Version".length + 1);
         else if(/AppleWebKit[\s\/]4\d{2}/.test(ua))
           bwsver = 2;
-        else if(mtc = ua.match(/\d?(\d{3})\./) && parseInt(mtc[1]) > 533)
+        else if((mtc = ua.match(/\d?(\d{3})\./)) && parseInt(mtc[1]) > 533)
           bwsver = 5;
       } else if(mtc = ua.match(/(Sleipnir[\s\/]\d\.\d)/))
         bws = "Sleipnir";
@@ -775,14 +774,15 @@ window.xjQuery
 
       // options is a clone of this.option.
       var pkg = options.packageName, ver = options.versionString;
+      var mtc = null;
 
-      if(/\.-([\w\.-]+)-pkg/.test(src)) {
-        pkg = RegExp.$1;
+      if(mtc = src.match(/\.-([\w\.-]+)-pkg/)) {
+        pkg = mtc[1];
         src = src.replace(/\.-([\w\.-]+)-pkg/, '');
         ver = ver.replace(/^\w+-/, [pkg, '-'].join(""));
       }
-      if(/\.-([\w\.-]+)-ver/.test(src)) {
-        ver = RegExp.$1;
+      if(mtc = src.match(/\.-([\w\.-]+)-ver/)) {
+        ver = mtc[1];
         src = src.replace(/\.-([\w\.-]+)-ver/, '');
         ver = ver.replace(/-\w+$/, ['-', ver].join(""));
       } else if(/\.no-version/.test(src)) {
@@ -805,13 +805,17 @@ window.xjQuery
         }
       } else
         evalRead();
+
       function evalRead(code) {
+
         var o_protocol = location.protocol;
         var o_host = location.host;
         var o_port = location.port || (/^http:/.test(o_protocol) ? 80: 443);
-        var s_protocol = /(^https?:)/.test(src) ? RegExp.$1: o_protocol;
-        var s_host = /\/\/([^\/]+)\//.test(src) ? RegExp.$1: o_host;
-        var s_port = /:(\d+)$/.test(s_host) ? RegExp.$1: (/^http:/
+
+        var mtc = null;
+        var s_protocol = (mtc = src.match(/(^https?:)/)) ? mtc[1]: o_protocol;
+        var s_host = (mtc = src.match(/\/\/([^\/]+)\//)) ? mtc[1]: o_host;
+        var s_port = (mtc = s_host.match(/:(\d+)$/)) ? mtc[1]: (/^http:/
             .test(s_protocol) ? 80: 443);
         if(options['evalMode'] && o_protocol == s_protocol && o_host == s_host
           && o_port == s_port) {

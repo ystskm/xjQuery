@@ -102,12 +102,12 @@ $(function() {
         }
 
         // pseudo class styles
-        var pseudoes_style = {};
+        var pseudoes_style = {}, mtc = null;
         for( var i in styles) {
-          if(/^([\w-]+):([\w-]+)$/.test(i)) {
-            if(!pseudoes_style[RegExp.$1])
-              pseudoes_style[RegExp.$1] = {};
-            pseudoes_style[RegExp.$1][RegExp.$2] = styles[i];
+          if(mtc = i.match(/^([\w-]+):([\w-]+)$/)) {
+            if(!pseudoes_style[mtc[1]])
+              pseudoes_style[mtc[1]] = {};
+            pseudoes_style[mtc[1]][mtc[2]] = styles[i];
             delete styles[i];
           }
         }
