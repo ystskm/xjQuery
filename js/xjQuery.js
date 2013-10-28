@@ -36,35 +36,46 @@
       if(this instanceof xjQuery)
         return this;
 
-      if(typeof arguments[0] == 'string') {
+      var arg0 = arguments[0], arg1 = arguments[1];
+      var typ0 = typeof arg0, typ1 = typeof arg1;
 
-        if(typeof arguments[1] == 'function') {
-          // xjQuery event ready binding
-          var places = arguments[0].split(' '), fn = arguments[1], dfds = [];
-          for( var i = 0; i < places.length; i++)
-            if(!xjQuery.data('readystatus', places[i])) {
-              var dfd = new $.Deferred();
-              xjQuery.one('ready', places[i], (function(dfd) {
-                return function() {
-                  dfd.resolve(), dfds;
-                };
-              }(dfd))), dfds.push(dfd);
-            }
-          return $.when.apply($, dfds).done(fn);
-        } else {
-          // remove comments, compress space, parseHTML and make jQuery object
-          var str = arguments[0].replace(/\r\n|\r|\n/g, ''), st;
-          while(~(st = str.indexOf('<!--')))
-            str = str.substr(0, st) + str.substr(str.indexOf('-->') + 3);
-          return $(str.replace(/>\s+</g, '><'));
-        }
+      // wait prepare mode
+      if('function' == typ1 && ('string' == typ0 || Array.isArray(arg0))) {
+
+        // string support for prepare
+        if('string' == typ0)
+          arg0 = arg0.split(' ');
+
+        // xjQuery event ready binding
+        var places = arg0, fn = arg1, dfds = [];
+        for( var i = 0; i < places.length; i++)
+          if(!xjQuery.data('readystatus', places[i])) {
+            var dfd = new $.Deferred();
+            xjQuery.one('ready', places[i], (function(dfd) {
+              return function() {
+                dfd.resolve(), dfds;
+              };
+            }(dfd))), dfds.push(dfd);
+          }
+        return $.when.apply($, dfds).done(fn);
 
       }
 
-      if(typeof arguments[0] == 'function' && typeof foonyah != 'undefined') {
+      // parser mode
+      if('string' == typ0) {
+        // remove comments, compress space, parseHTML and make jQuery object
+        var str = arg0.replace(/\r\n|\r|\n/g, ''), st;
+        while(~(st = str.indexOf('<!--')))
+          str = str.substr(0, st) + str.substr(str.indexOf('-->') + 3);
+
+        return $(str.replace(/>\s+</g, '><'));
+
+      }
+
+      if('function' == typ0 && typeof foonyah != 'undefined') {
         // use when foonyah is loaded
-        return foonyah.isStarted() ? arguments[0](): $(window).one(
-          foonyah.internalEventName('load'), arguments[0]);
+        return foonyah.isStarted() ? arg0(): $(window).one(
+          foonyah.internalEventName('load'), arg0);
       }
 
     };
