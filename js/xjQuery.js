@@ -1,11 +1,11 @@
 /*!
- * xjQuery JavaScript Library v0.2.4 rev.144
+ * xjQuery JavaScript Library v0.2.4 rev.193
  *
  * Copyright 2013 Yoshitaka Sakamoto <brilliantpenguin@gmail.com>
  * Released under the MIT license
  * http://github.com/ystskm/xjQuery/blob/master/LICENSE.md
  *
- * Date: 2013-10-29 02:27:21
+ * Date: 2013-11-27 13:43:42
  */window.xjQuery
   && window.xjQuery.version
   || (function(window, $) {
@@ -93,7 +93,7 @@
       },
 
       version: '0.2.4',
-      release: '2013-10-29 02:27:21',
+      release: '2013-11-27 13:43:42',
 
       workon: typeof global == 'undefined' ? 'Browser': 'Node',
       data: function(name, place, val) {

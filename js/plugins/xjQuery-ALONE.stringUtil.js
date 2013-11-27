@@ -23,17 +23,12 @@ $(function() {
   });
 
   var alphabets = 'abcdefghijklmnopqrstuvwxyz';
-
   var typing_map = {};
 
   var typings = {
-
     ja: {
-
       offset: [12353, 12449],
-
       vowels: ['a', 'i', 'u', 'e', 'o'],
-
       consos: [['x', ''], ['k', 'g'], ['s', 'z'], [{
         'u': 'xtu'
       }, 't', 'd'], ['n'], ['h', 'b', 'p'], ['m'], [{
@@ -54,9 +49,7 @@ $(function() {
       }], [{
         'a': 'n'
       }]]
-
     }
-
   };
 
   var typing_mark = {
@@ -105,7 +98,7 @@ $(function() {
   while(i < 26)
     registToMap(65313 + i, alphabets[i].toUpperCase()), i++;
 
-  // smapp alphabet
+  // small alphabet
   i = 0;
   while(i < 26)
     registToMap(65345 + i, alphabets[i]), i++;
@@ -113,76 +106,38 @@ $(function() {
   for( var ln in typings) {
 
     var t = typings[ln];
-
     var oss = t.offset, vws = t.vowels, cos = t.consos;
 
     $.each(oss, function(x, os) {
-
-      i = 0;
-
-      $.each(cos, function(j, co_arr) {
-
+      i = 0, $.each(cos, function(j, co_arr) {
         $.each(vws, function(k, vw) {
-
-          $.each(co_arr, function(l, co) {
-
+          co_arr.forEach(function(co, l) {
             var type_str = null;
-
-            if(typeof co == 'string')
-              type_str = co + vw;
-
-            else if(co[vw])
-              type_str = co[vw];
-
+            type_str = typeof co == 'string' ? co + vw: co[vw] ? co[vw]: null;
             if(type_str)
               registToMap(os + i, type_str), i++;
-
           });
-
         });
-
       });
-
     });
 
   }
 
   function registToMap(n, c) {
-
     typing_map[unescape('%u' + (n).toString(16))] = c;
-
   }
 
   function urlHashRemove(url) {
-
     return url.replace(location.hash, '');
-
   }
 
   function javascriptFormatParsable(s) {
-
     try {
-      JSON.parse(s);
-      return s;
-    } catch(e) {
-      s = s.replace(/({|\[|,|:)[\t\s]*'/g, function($0, $1) {
-        return $1 + '"';
-      });
-      s = s.replace(/'[\t\s]*(}|\]|,|:)/g, function($0, $1) {
-        return '"' + $1;
-      });
-      s = s.replace(/({|,)[\t\s]*([\w]+)[\t\s]*:/g, function($0, $1, $2) {
-        return $1 + '"' + $2 + '":';
-      });
-    }
-
-    try {
-      JSON.parse(s);
+      eval('(' + s + ')');
       return s;
     } catch(e) {
       return false;
     }
-
   }
 
   function popedString(str, sep, poping, last, direction) {
@@ -203,119 +158,80 @@ $(function() {
   }
 
   function doubleByte(s) {
-
     for( var i = 0; i < s.length; ++i) {
-
       var c = s.charCodeAt(i);
       if(c < 256 || (c >= 0xff61 && c <= 0xff9f))
         return false;
-
     }
-
     return true;
-
   }
 
   function byteCount(s) {
-
+    // TODO affect encoding
     var count = 0;
-
     for( var i = 0; i < s.length; ++i)
       count += (doubleByte(s.substring(i, i + 1))) ? 2: 1;
-
     return count;
-
   }
 
   function zeroSupply(s, n, emptyForbid) {
-
     if(!s && emptyForbid)
       return s;
-
     s = s.toString();
-
     if(n < 2)
       return s.slice(1);
-
     n = n - s.length;
-
     for( var i = 0; i < n; i++)
       s = ['0', s].join("");
-
     return s;
-
   }
 
   function zeroSuppless(s, zeroForbid) {
-
     var less = s.toString().replace(/^0+([^0])/, function(a, b) {
       return b;
     });
-
     if(zeroForbid)
       return less.replace(/^0+$/, '');
     else
       return less;
-
   }
 
   function isString(obj) {
-
-    return obj && (typeof obj == "string" || obj instanceof String);
-
+    return obj != null && (typeof obj == "string" || obj instanceof String);
   }
 
   function toTypingString(bs) {
 
     var ns = '';
-
     for( var i = 0; i < bs.length; i++)
       ns += f2h(bs[i]);
-
     return typeof ns == 'string' ? ns: '';
 
     function f2h(c) {
-
       var ret = typing_map[c] || typing_mark[c];
-
       if(!ret)
-
         ret = escape(c) == c ? c: escape(c) == '%20' ? c: null;
-
       if(ret)
-
         return ret;
-
       return console.warn('Unexpected string: ' + c), c;
-
     }
 
   }
 
   function format(n, decimal, operation) {
-
     if(parseInt(n, 10) == n)
       return formatNumber(n, decimal, operation);
-
     return formatFloat(n, decimal, operation);
-
   }
 
   function formatNumber(n, decimal, operation) {
-
     // TODO not stand alone
     n = $xj.round(n, decimal, operation);
-
     if(!n && parseInt(n, 10) !== 0)
       return "";
 
     var p = n.toString().split('.');
-
-    if(!p[0])
-      p[0] = "0";
-
-    if(!p[1])
-      p[1] = "";
+    !p[0] && (p[0] = "0"), !p[1] && (p[1] = "");
 
     var np = "", cnt = p[0].length - 1;
     while(p[0][cnt]) {
