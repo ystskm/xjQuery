@@ -241,180 +241,186 @@
 
   // ================= ComUtil ================ //
   var _cnt = 0, _now = null;
-  $xj.add('ComUtil',
-    {
-      getId: function() {
-        var now = Date.now();
-        if(now != _now)
-          _cnt = 0, _now = now;
-        return now + '' + _cnt++;
-      },
-      uaAnalyze: function(ua, criteria) {
+  $xj.add('ComUtil', {
+    getId: function() {
+      var now = Date.now();
+      if(now != _now)
+        _cnt = 0, _now = now;
+      return now + '' + _cnt++;
+    },
+    uaAnalyze: function(ua, criteria) {
 
-        criteria = $.extend({
-          "Chrome": 10,
-          "Safari": 4,
-          "Firefox": 4,
-          "MSIE": 9,
-          "Opera": 9
-        }, criteria);
+      criteria = $.extend({
+        "Chrome": 10,
+        "Safari": 4,
+        "Firefox": 4,
+        "MSIE": 9,
+        "Opera": 9
+      }, criteria);
 
-        var mtc = null;
-        var bws = null, bwsver = null, os = null, osver = null, device = null;
-        if(mtc = ua.match(/(Opera[\s\/]\d+\.\d{1,2})/))
-          bws = "Opera";
-        else if(mtc = ua.match(/(MSIE[\s\/]\d+\.\d{1,2})/))
-          bws = "MSIE";
-        else if(mtc = ua.match(/(Firefox[\s\/]\d+\.\d)/))
-          bws = "Firefox";
-        else if(mtc = ua.match(/(Chrome[\s\/]\d+\.\d)/))
-          bws = "Chrome";
-        else if(/Safari/.test(ua)) {
-          bws = "Safari";
-          if(mtc = ua.match(/(Version[\s\/]\d+\.\d)/))
-            bwsver = mtc[1].slice("Version".length + 1);
-          else if(/AppleWebKit[\s\/]4\d{2}/.test(ua))
-            bwsver = 2;
-          else if((mtc = ua.match(/\d?(\d{3})\./)) && parseInt(mtc[1]) > 533)
-            bwsver = 5;
-        } else if(mtc = ua.match(/(Sleipnir[\s\/]\d\.\d)/))
-          bws = "Sleipnir";
-        else if(mtc = ua.match(/(Konqueror[\s\/]\d\.\d)/))
-          bws = "Konqueror";
-        else if(/Netscape/.test()) {
-          bws = "Netscape";
-          if(mtc = ua.match(/(Netscape\d)/))
-            bwsver = mtc[1].slice(bws.length);
-          else if(mtc = ua.match(/(Netscape[\s\/]\d\.\d{1,2})/))
-            ;
-        } else if(mtc = ua.match(/(DoCoMo[\s\/]\d+\.\d)/)) {
-          bws = "DoCoMo";
-          device = "cellular";
-        } else if(mtc = ua.match(/KDDI/)) {
-          bws = "KDDI";
-          device = "cellular";
-        } else if(mtc = ua.match(/(J-PHONE[\s\/]\d+\.\d)/)) {
-          bws = "J-PHONE";
-          device = "cellular";
-        } else if(mtc = ua.match(/(SoftBank[\s\/]\d+\.\d)/)) {
-          bws = "SoftBank";
-          device = "cellular";
-        } else if(mtc = ua.match(/(Mozilla[\s\/]\d+\.\d)/)) {
-          bws = "Mozilla";
-        } else if(/Node\.js/.test(ua)) {
-          bws = "Node.js v8", bwsver = "TODO";
-        } else if(mtc = ua
-            .match(/(\s|^)([\w-]+bot[\w-]*)\/(\d+(\.\w+))(\s|;|$)/)) {
-          bws = mtc[2], bwsver = mtc[3];
-          device = "robot";
-        }
+      var mtc = null;
+      var bws = null, bwsver = null, os = null, osver = null, device = null;
+      if(mtc = ua.match(/(Opera[\s\/]\d+\.\d{1,2})/))
+        bws = "Opera";
+      else if(mtc = ua.match(/(MSIE[\s\/]\d+\.\d{1,2})/))
+        bws = "MSIE";
+      else if(mtc = ua.match(/(Firefox[\s\/]\d+\.\d)/))
+        bws = "Firefox";
+      else if(mtc = ua.match(/(Chrome[\s\/]\d+\.\d)/))
+        bws = "Chrome";
+      else if(/Safari/.test(ua)) {
+        bws = "Safari";
+        if(mtc = ua.match(/(Version[\s\/]\d+\.\d)/))
+          bwsver = mtc[1].slice("Version".length + 1);
+        else if(/AppleWebKit[\s\/]4\d{2}/.test(ua))
+          bwsver = 2;
+        else if((mtc = ua.match(/\d?(\d{3})\./)) && parseInt(mtc[1]) > 533)
+          bwsver = 5;
+      } else if(mtc = ua.match(/(Sleipnir[\s\/]\d\.\d)/))
+        bws = "Sleipnir";
+      else if(mtc = ua.match(/(Konqueror[\s\/]\d\.\d)/))
+        bws = "Konqueror";
+      else if(/Netscape/.test()) {
+        bws = "Netscape";
+        if(mtc = ua.match(/(Netscape\d)/))
+          bwsver = mtc[1].slice(bws.length);
+        else if(mtc = ua.match(/(Netscape[\s\/]\d\.\d{1,2})/))
+          ;
+      } else if(mtc = ua.match(/(DoCoMo[\s\/]\d+\.\d)/)) {
+        bws = "DoCoMo";
+        device = "cellular";
+      } else if(mtc = ua.match(/KDDI/)) {
+        bws = "KDDI";
+        device = "cellular";
+      } else if(mtc = ua.match(/(J-PHONE[\s\/]\d+\.\d)/)) {
+        bws = "J-PHONE";
+        device = "cellular";
+      } else if(mtc = ua.match(/(SoftBank[\s\/]\d+\.\d)/)) {
+        bws = "SoftBank";
+        device = "cellular";
+      } else if(mtc = ua.match(/(Mozilla[\s\/]\d+\.\d)/)) {
+        bws = "Mozilla";
+      } else if(/Node\.js/.test(ua)) {
+        bws = "Node.js v8", bwsver = "TODO";
+      } else if(mtc = ua
+          .match(/(\s|^)([\w-]+(b|B)ot[\w-]*)\/(\d+(\.\w+))(\s|;|$)/)) {
+        bws = mtc[2], bwsver = mtc[4];
+        device = 'robot';
+      } else if(mtc = ua.match(/web spider\/(\d+(\.\w+))(\s|;|$)/)) {
+        bws = 'web spider', bwsver = mtc[1];
+        device = 'robot';
+      } else if(mtc = ua.match(/^(\w+)\/(\d+(\.\w+))$/)) {
+        bws = mtc[1], bwsver = mtc[2];
+        device = 'cli';
+      }
 
-        if(!bws)
-          bws = "Other";
+      if(!bws)
+        bws = "Other";
 
-        if(!bwsver) {
-          mtc ? bwsver = mtc[1].slice(bws.length + 1): (function() {
-            console.warn('Unrecognized browser version: ' + ua)
-          })();
-        }
+      if(!bwsver) {
+        mtc ? bwsver = mtc[1].slice(bws.length + 1): (function() {
+          console.warn('Unrecognized browser version for browser "' + bws
+            + '": ' + ua)
+        })();
+      }
 
-        // OS judgement
-        if(/Linux/.test(ua)) {
-          os = "Linux";
-          if(mtc = ua.match(/Android (\d\.\d)/)) {
-            os = "Android", osver = mtc[1];
-            device = "mobile";
-          }
-        } else if(/Android;/i.test(ua)) {
-          // add for Firefox 20
-          os = "Android";
-        } else if(/BSD/.test(ua)) {
-          if(/FreeBSD/.test(ua)) {
-            os = "FreeBSD";
-          } else {
-            os = "BSD";
-          }
-        } else if(/SunOS/.test(ua)) {
-          os = "SunOS";
-          if(mtc = ua.match(/(SunOS[\s\/]\d\.\d)/))
-            osver = mtc[1].slice(os.length + 1, os.length + 4);
-          os = "Solaris";
-        } else if(/Win[dN9][oT58]/.test(ua)) {
-          os = "Windows";
-          if(/Windows NT 5.0/.test(ua))
-            osver = "2000";
-          else if(/Windows 2000/.test(ua))
-            osver = "2000";
-          else if(/Windows NT 5.1/.test(ua))
-            osver = "XP";
-          else if(/Windows NT 5.2/.test(ua))
-            osver = "2003";
-          else if(/Windows XP/.test(ua))
-            osver = "XP";
-          else if(/Windows NT 6.0/.test(ua))
-            osver = "Vista";
-          else if(/Windows NT 6.1/.test(ua))
-            osver = "7";
-          else if(/Windows 98/.test(ua))
-            osver = "98";
-          else if(/Windows 95/.test(ua))
-            osver = "95";
-          else if(/Windows Me/.test(ua))
-            osver = "Me";
-          else if(/Windows NT/.test(ua))
-            osver = "NT";
-          else if(/Win95/.test(ua))
-            osver = "95";
-          else if(/Win98/.test(ua))
-            osver = "98";
-          else if(/WinNT/.test(ua))
-            osver = "NT";
-        } else if(/Mac/.test(ua)) {
-          // Mozilla/5.0 (iPad; CPU OS 6_1_3 like Mac OS X) AppleWebKit/536.26 
-          // (KHTML, like Gecko) CriOS/26.0.1410.50 Mobile/10B329 Safari/8536.25
-          if(/iPod/.test(ua)) {
-            os = "iPod";
-            device = "mobile";
-          } else if(mtc = ua.match(/iPhone[^\d]+((\d+_?){1,3})/)) {
-            os = "iPhone";
-            osver = mtc[1].replace(/_/g, '.');
-            device = "mobile";
-          } else if(mtc = ua.match(/iPad[^\d]+((\d+_?){1,3})/)) {
-            os = "iPad";
-            osver = mtc[1].replace(/_/g, '.');
-            device = "tablet";
-          } else if(mtc = ua.match(/Mac OS[^\d]+((\d+_?){1,3})/)) {
-            os = "MacOS";
-            osver = mtc[1].replace(/_/g, '.');
-          } else {
-            os = "MacOS";
-          }
-        } else if(/Nintendo/.test(ua))
-          os = "Nintendo";
-        else if(/PlayStation/.test(ua))
-          os = "PlayStation";
-        else if(/DreamPassport/.test(ua))
-          os = "DreamPassport";
-        else if(mtc = ua.match(/Node\.js \(([^;]+);.+rv:v(\d+.\d+.\d+)/))
-          os = mtc[1], osver = mtc[2];
-
-        // TODO check tablet firefox
-        if(device != 'tablet' && /Mobile/.test(ua)) {
-          // add for Firefox 20
+      // OS judgement
+      if(/Linux/i.test(ua)) {
+        os = "Linux";
+        if(mtc = ua.match(/Android (\d\.\d)/)) {
+          os = "Android", osver = mtc[1];
           device = "mobile";
         }
+      } else if(/Android;/i.test(ua)) {
+        // add for Firefox 20
+        os = "Android";
+      } else if(/BSD/.test(ua)) {
+        if(/FreeBSD/.test(ua)) {
+          os = "FreeBSD";
+        } else {
+          os = "BSD";
+        }
+      } else if(/SunOS/.test(ua)) {
+        os = "SunOS";
+        if(mtc = ua.match(/(SunOS[\s\/]\d\.\d)/))
+          osver = mtc[1].slice(os.length + 1, os.length + 4);
+        os = "Solaris";
+      } else if(/Win[dN9][oT58]/.test(ua)) {
+        os = "Windows";
+        if(/Windows NT 5.0/.test(ua))
+          osver = "2000";
+        else if(/Windows 2000/.test(ua))
+          osver = "2000";
+        else if(/Windows NT 5.1/.test(ua))
+          osver = "XP";
+        else if(/Windows NT 5.2/.test(ua))
+          osver = "2003";
+        else if(/Windows XP/.test(ua))
+          osver = "XP";
+        else if(/Windows NT 6.0/.test(ua))
+          osver = "Vista";
+        else if(/Windows NT 6.1/.test(ua))
+          osver = "7";
+        else if(/Windows 98/.test(ua))
+          osver = "98";
+        else if(/Windows 95/.test(ua))
+          osver = "95";
+        else if(/Windows Me/.test(ua))
+          osver = "Me";
+        else if(/Windows NT/.test(ua))
+          osver = "NT";
+        else if(/Win95/.test(ua))
+          osver = "95";
+        else if(/Win98/.test(ua))
+          osver = "98";
+        else if(/WinNT/.test(ua))
+          osver = "NT";
+      } else if(/Mac/.test(ua)) {
+        // Mozilla/5.0 (iPad; CPU OS 6_1_3 like Mac OS X) AppleWebKit/536.26 
+        // (KHTML, like Gecko) CriOS/26.0.1410.50 Mobile/10B329 Safari/8536.25
+        if(/iPod/.test(ua)) {
+          os = "iPod";
+          device = "mobile";
+        } else if(mtc = ua.match(/iPhone[^\d]+((\d+_?){1,3})/)) {
+          os = "iPhone";
+          osver = mtc[1].replace(/_/g, '.');
+          device = "mobile";
+        } else if(mtc = ua.match(/iPad[^\d]+((\d+_?){1,3})/)) {
+          os = "iPad";
+          osver = mtc[1].replace(/_/g, '.');
+          device = "tablet";
+        } else if(mtc = ua.match(/Mac OS[^\d]+((\d+_?){1,3})/)) {
+          os = "MacOS";
+          osver = mtc[1].replace(/_/g, '.');
+        } else {
+          os = "MacOS";
+        }
+      } else if(/Nintendo/.test(ua))
+        os = "Nintendo";
+      else if(/PlayStation/.test(ua))
+        os = "PlayStation";
+      else if(/DreamPassport/.test(ua))
+        os = "DreamPassport";
+      else if(mtc = ua.match(/Node\.js \(([^;]+);.+rv:v(\d+.\d+.\d+)/))
+        os = mtc[1], osver = mtc[2];
 
-        return {
-          Browser: bws,
-          BrowserVersion: bwsver,
-          OS: os,
-          OSVersion: osver,
-          Device: device || "laptop",
-          Compatibility: criteria[bws] && bwsver >= criteria[bws],
-          UserAgent: ua
-        };
+      // TODO check tablet firefox
+      if(device != 'tablet' && /Mobile/.test(ua)) {
+        // add for Firefox 20
+        device = "mobile";
       }
-    });
+
+      return {
+        Browser: bws,
+        BrowserVersion: bwsver,
+        OS: os,
+        OSVersion: osver,
+        Device: device || "laptop",
+        Compatibility: criteria[bws] && bwsver >= criteria[bws],
+        UserAgent: ua
+      };
+    }
+  });
 
   // =================== CLASS =================== //
   $xj.add('CLASS', {
