@@ -306,7 +306,7 @@
           .match(/(\s|^)([\w-]+(b|B)ot[\w-]*)\/(\d+(\.\w+))(\s|;|$)/)) {
         bws = mtc[2], bwsver = mtc[4];
         device = 'robot';
-      } else if(mtc = ua.match(/web spider\/(\d+(\.\w+))(\s|;|$)/)) {
+      } else if(mtc = ua.match(/spider\/(\d+(\.\w+))(\s|;|$)/)) {
         bws = 'web spider', bwsver = mtc[1];
         device = 'robot';
       } else if(mtc = ua.match(/^(\w+)\/(\d+(\.\w+))$/)) {
