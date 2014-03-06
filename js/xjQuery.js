@@ -298,10 +298,11 @@
       } else if(mtc = ua.match(/(SoftBank[\s\/]\d+\.\d)/)) {
         bws = "SoftBank";
         device = "cellular";
-      } else if(mtc = ua.match(/(Mozilla[\s\/]\d+\.\d)/)) {
-        bws = "Mozilla";
       } else if(/Node\.js/.test(ua)) {
         bws = "Node.js v8", bwsver = "TODO";
+      } else if(mtc = ua.match(/Mozilla[\s\/](\d+\.\d).+bot/)) {
+        bws = "Mozilla", bwsver = mtc[1];
+        device = 'robot';
       } else if(mtc = ua
           .match(/(\s|^)([\w-]+(b|B)ot[\w-]*)\/(\d+(\.\w+))(\s|;|$)/)) {
         bws = mtc[2], bwsver = mtc[4];
@@ -310,6 +311,7 @@
         bws = 'web spider', bwsver = mtc[1];
         device = 'robot';
       } else if(mtc = ua.match(/^(\w+)\/(\d+(\.\w+))$/)) {
+        // simplest cli request userAgent such as "Wget"
         bws = mtc[1], bwsver = mtc[2];
         device = 'cli';
       }
