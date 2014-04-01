@@ -1,11 +1,11 @@
 /*!
- * xjQuery JavaScript Library v0.3.0 rev.433
+ * xjQuery JavaScript Library v0.3.0 rev.434
  *
  * Copyright 2013 Yoshitaka Sakamoto <brilliantpenguin@gmail.com>
  * Released under the MIT license
  * http://github.com/ystskm/xjQuery/blob/master/LICENSE.md
  *
- * Date: 2014-04-01 11:25:58
+ * Date: 2014-04-01 11:39:08
  *//***/
 // >> xjQuery Core >>
 (function(has_win, has_mod) {
@@ -92,7 +92,7 @@
     },
 
     version: '0.3.0',
-    release: '2014-04-01 11:25:58',
+    release: '2014-04-01 11:39:08',
     workon: typeof global == 'undefined' ? 'Browser': 'Node',
     data_target: internalEmitter,
     event_target: internalEmitter,
@@ -464,7 +464,7 @@
       }
     };
 
-    addEmitterAction('Chain', ChainProto);
+    _addEmitterAction('Chain', ChainProto);
     $xj.add('Chain', xjQuery.CLASS.makeClass(ChainProto));
     var ChainProto = {
 

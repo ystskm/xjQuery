@@ -1,4 +1,12 @@
-/***/
+/*!
+ * xjQuery JavaScript Library v0.3.0 rev.434
+ *
+ * Copyright 2013 Yoshitaka Sakamoto <brilliantpenguin@gmail.com>
+ * Released under the MIT license
+ * http://github.com/ystskm/xjQuery/blob/master/LICENSE.md
+ *
+ * Date: 2014-04-01 11:39:08
+ *//***/
 // >> xjQuery Core >>
 (function(has_win, has_mod) {
 
@@ -83,8 +91,8 @@
       readystatus: 'ready'
     },
 
-    version: '%_Version_%',
-    release: '%_ReleaseDt_%',
+    version: '0.3.0',
+    release: '2014-04-01 11:39:08',
     workon: typeof global == 'undefined' ? 'Browser': 'Node',
     data_target: internalEmitter,
     event_target: internalEmitter,
@@ -177,6 +185,8 @@
   // Expose
   win.xjQuery = $.extend(xjQuery, parameters);
   win.$xj = $.extend($xj, win.xjQuery);
+
+  // Expose (Node)
   has_mod && (module.exports = win.$xj);
 
 })(typeof window != 'undefined', typeof module != 'undefined');
@@ -454,7 +464,7 @@
       }
     };
 
-    addEmitterAction('Chain', ChainProto);
+    _addEmitterAction('Chain', ChainProto);
     $xj.add('Chain', xjQuery.CLASS.makeClass(ChainProto));
     var ChainProto = {
 
@@ -1191,7 +1201,6 @@
           start = stat[1].split(" ");
           end = stat[2].split(" ");
           var dir = null;
-          dir;
           if(start[0] == end[0]) {
             dir = start[1];
           } else if(start[1] == end[1]) {
