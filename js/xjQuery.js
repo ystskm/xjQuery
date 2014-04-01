@@ -1,11 +1,11 @@
 /*!
- * xjQuery JavaScript Library v0.3.0 rev.436
+ * xjQuery JavaScript Library v0.3.0 rev.437
  *
  * Copyright 2013 Yoshitaka Sakamoto <brilliantpenguin@gmail.com>
  * Released under the MIT license
  * http://github.com/ystskm/xjQuery/blob/master/LICENSE.md
  *
- * Date: 2014-04-01 11:59:56
+ * Date: 2014-04-01 12:07:16
  *//***/
 // >> xjQuery Core >>
 (function(has_win, has_mod) {
@@ -92,7 +92,7 @@
     },
 
     version: '0.3.0',
-    release: '2014-04-01 11:59:56',
+    release: '2014-04-01 12:07:16',
     workon: typeof global == 'undefined' ? 'Browser': 'Node',
     data_target: internalEmitter,
     event_target: internalEmitter,
@@ -176,12 +176,12 @@
   };
 
   // TODO performance check
-//  for( var i in getters)
-//    Object.defineProperty(xjQuery, i, {
-//      get: callparameter(getters[i]),
-//      set: prohibitsetter()
-//    });
-  for(var i in getters)
+  //  for( var i in getters)
+  //    Object.defineProperty(xjQuery, i, {
+  //      get: callparameter(getters[i]),
+  //      set: prohibitsetter()
+  //    });
+  for( var i in getters)
     xjQuery[i] = getters[i];
 
   // Expose
@@ -973,15 +973,17 @@
         element.appendChild(script);
 
         function onload() {
-          if(removeOnLoad === true)
+          if(removeOnLoad === true && script.parentNode)
             element.removeChild(script);
           onload.apply(this, arguments);
         }
+
         function onerror() {
           if(removeOnLoad === true)
             element.removeChild(script);
           onerror.apply(this, arguments);
         }
+
         function onreadystatechange() {
           switch(script.readyState) {
           case 'complete':
@@ -992,8 +994,8 @@
             script.onerror();
             break;
           }
-
         }
+
       }
 
     }
