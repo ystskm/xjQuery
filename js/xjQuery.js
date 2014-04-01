@@ -189,7 +189,7 @@
   win.$xj = $.extend($xj, win.xjQuery);
 
   // TODO why node on linux is not works collectively ?
-  console.log('Checking xjQuery parameter circumstances: ', xjQuery.data)
+  console.log('Checking xjQuery parameter circumstances: ', xjQuery.data, $xj.data)
 
   // Expose (Node)
   has_mod && module && (module.exports = win.$xj);
