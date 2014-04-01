@@ -1,11 +1,11 @@
 /*!
- * xjQuery JavaScript Library v0.3.0 rev.446
+ * xjQuery JavaScript Library v0.3.1 rev.447
  *
  * Copyright 2013 Yoshitaka Sakamoto <brilliantpenguin@gmail.com>
  * Released under the MIT license
  * http://github.com/ystskm/xjQuery/blob/master/LICENSE.md
  *
- * Date: 2014-04-02 08:24:30
+ * Date: 2014-04-02 08:35:50
  *//***/
 (function(has_win, has_mod) {
 
@@ -93,8 +93,8 @@
   // set to define getter
   var getters = {
 
-    version: '0.3.0',
-    release: '2014-04-02 08:24:30',
+    version: '0.3.1',
+    release: '2014-04-02 08:35:50',
     workon: typeof global == 'undefined' ? 'Browser': 'Node',
     data_target: internalEmitter,
     event_target: internalEmitter,
