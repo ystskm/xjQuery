@@ -5,7 +5,7 @@
  * Released under the MIT license
  * http://github.com/ystskm/xjQuery/blob/master/LICENSE.md
  *
- * Date: 2014-04-01 14:07:31
+ * Date: 2014-04-02 07:38:35
  *//***/
 (function(has_win, has_mod) {
 
@@ -94,7 +94,7 @@
   var getters = {
 
     version: '0.3.0',
-    release: '2014-04-01 14:07:31',
+    release: '2014-04-02 07:38:35',
     workon: typeof global == 'undefined' ? 'Browser': 'Node',
     data_target: internalEmitter,
     event_target: internalEmitter,
@@ -188,8 +188,11 @@
   win.xjQuery = $.extend(xjQuery, parameters);
   win.$xj = $.extend($xj, win.xjQuery);
 
+  // TODO why node on linux is not works collectively ?
+  console.log('Checking xjQuery parameter circumstances: ', xjQuery.data)
+
   // Expose (Node)
-  has_mod && (module.exports = win.$xj);
+  has_mod && module && (module.exports = win.$xj);
   return xjQuery;
 
 })(typeof window != 'undefined', typeof module != 'undefined')
