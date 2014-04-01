@@ -1,11 +1,11 @@
 /*!
- * xjQuery JavaScript Library v0.3.0 rev.437
+ * xjQuery JavaScript Library v0.3.0 rev.438
  *
  * Copyright 2013 Yoshitaka Sakamoto <brilliantpenguin@gmail.com>
  * Released under the MIT license
  * http://github.com/ystskm/xjQuery/blob/master/LICENSE.md
  *
- * Date: 2014-04-01 12:07:16
+ * Date: 2014-04-01 12:11:37
  *//***/
 // >> xjQuery Core >>
 (function(has_win, has_mod) {
@@ -92,7 +92,7 @@
     },
 
     version: '0.3.0',
-    release: '2014-04-01 12:07:16',
+    release: '2014-04-01 12:11:37',
     workon: typeof global == 'undefined' ? 'Browser': 'Node',
     data_target: internalEmitter,
     event_target: internalEmitter,
@@ -964,7 +964,7 @@
         var script = document.createElement('script');
         script.src = src;
         script.type = !!options.type ? options.type: 'text/javascript';
-        script.onload = onload, script.onerror = onerror;
+        script.onload = script_onload, script.onerror = script_onerror;
 
         if(options.charset)
           script.charset = options.charset;
@@ -972,13 +972,13 @@
           script.onreadystatechange = onreadystatechange;
         element.appendChild(script);
 
-        function onload() {
-          if(removeOnLoad === true && script.parentNode)
+        function script_onload() {
+          if(removeOnLoad === true)
             element.removeChild(script);
           onload.apply(this, arguments);
         }
 
-        function onerror() {
+        function script_onerror() {
           if(removeOnLoad === true)
             element.removeChild(script);
           onerror.apply(this, arguments);
