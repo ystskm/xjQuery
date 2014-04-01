@@ -90,11 +90,7 @@
       return p.join(prefix, paths.plugind);
 
     // file
-    if(keys[0] == 'plugin')
-      ret = p.join(paths.plugind, ret);
-    else
-      ret = paths.xjquery;
-
+    ret = keys[0] == 'plugin' ? p.join(paths.plugind, ret): paths.xjquery;
     return p.join(prefix, ret) + (options.version ? '-' + options.version: '')
       + (options.withext ? '.' + js: '');
 
