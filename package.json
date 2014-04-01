@@ -1,11 +1,11 @@
 {
   "name": "xjquery",
   "version": "0.3.0",
-  "description": "Concentrated eXtender of jQuery.",
+  "description": "Extender of jQuery for web application.",
   "author": "ystskm <brilliantpenguin@gmail.com> | ystk_skm@twitter",
   "repository": {
         "type": "git",
-        "url": "https://ystskm@github.com/ystskm/xjQuery.git"
+        "url": "https://github.com/ystskm/xjQuery.git"
     },
   "main": "./index",
   "engines": {
