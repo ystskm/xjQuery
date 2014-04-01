@@ -1,11 +1,11 @@
 /*!
- * xjQuery JavaScript Library v0.3.0 rev.441
+ * xjQuery JavaScript Library v0.3.0 rev.446
  *
  * Copyright 2013 Yoshitaka Sakamoto <brilliantpenguin@gmail.com>
  * Released under the MIT license
  * http://github.com/ystskm/xjQuery/blob/master/LICENSE.md
  *
- * Date: 2014-04-02 07:38:35
+ * Date: 2014-04-02 08:24:30
  *//***/
 (function(has_win, has_mod) {
 
@@ -94,7 +94,7 @@
   var getters = {
 
     version: '0.3.0',
-    release: '2014-04-02 07:38:35',
+    release: '2014-04-02 08:24:30',
     workon: typeof global == 'undefined' ? 'Browser': 'Node',
     data_target: internalEmitter,
     event_target: internalEmitter,
@@ -140,27 +140,23 @@
 
   // set normally
   var parameters = {
-    add: function(name, obj) {
-      debug('xjQuery.' + name + ' will be extend.');
-      xjQuery[name] = obj;
-      $.isFunction(obj) ? $xj[name] = obj: $.extend($xj, obj);
-    },
-    extend: function(base, name, ext, obj) {
+    add: add,
+    extend: extend
+  }
 
-      if(obj == null)
-        obj = ext, ext = true;
-      base[name] ? $.extend(true, base[name], obj): base[name] = obj;
+  function add(name, obj) {
+    debug('xjQuery.' + name + ' will be extend.');
+    xjQuery[name] = obj, $.isFunction(obj) ? $xj[name] = obj: $
+        .extend($xj, obj);
+  }
 
-      if(ext == null)
-        return;
-
-      if(ext === true)
-        $.extend(true, window.$xj, obj);
-      else
-        $.extend(true, ext, obj);
-
-    }
-  };
+  function extend(base, name, ext, obj) {
+    if(obj == null)
+      obj = ext, ext = true;
+    base[name] ? $.extend(true, base[name], obj): base[name] = obj;
+    ext == null ? false: (ext === true ? $.extend(true, window.$xj, obj): $
+        .extend(true, ext, obj));
+  }
 
   // defineGetter function
   var callparameter = function(value) {
@@ -179,20 +175,22 @@
 
   // TODO performance check
   for( var i in getters)
-    Object.defineProperty(xjQuery, i, {
+    (function(rule) {
+      Object.defineProperty(xjQuery, i, rule);
+      Object.defineProperty($xj, i, rule);
+    })({
       get: callparameter(getters[i]),
       set: prohibitsetter(i)
-    });
+    })
 
-  // Expose
+  // Expose, inherits parameters to $xj.
   win.xjQuery = $.extend(xjQuery, parameters);
-  win.$xj = $.extend($xj, win.xjQuery);
+  win.$xj = $.extend($xj, xjQuery);
 
-  // TODO why node on linux is not works collectively ?
-  console.log('Checking xjQuery parameter circumstances: ', xjQuery.data, $xj.data)
-
-  // Expose (Node)
+  // Expose (Node Pattern)
+  // attention: [chrome] module == null
   has_mod && module && (module.exports = win.$xj);
+
   return xjQuery;
 
 })(typeof window != 'undefined', typeof module != 'undefined')
