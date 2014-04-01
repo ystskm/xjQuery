@@ -1,11 +1,11 @@
 /*!
- * xjQuery JavaScript Library v0.3.0 rev.434
+ * xjQuery JavaScript Library v0.3.0 rev.435
  *
  * Copyright 2013 Yoshitaka Sakamoto <brilliantpenguin@gmail.com>
  * Released under the MIT license
  * http://github.com/ystskm/xjQuery/blob/master/LICENSE.md
  *
- * Date: 2014-04-01 11:39:08
+ * Date: 2014-04-01 11:50:47
  *//***/
 // >> xjQuery Core >>
 (function(has_win, has_mod) {
@@ -92,7 +92,7 @@
     },
 
     version: '0.3.0',
-    release: '2014-04-01 11:39:08',
+    release: '2014-04-01 11:50:47',
     workon: typeof global == 'undefined' ? 'Browser': 'Node',
     data_target: internalEmitter,
     event_target: internalEmitter,
@@ -224,6 +224,7 @@
         this._emitter[prop](xjQuery.eventName(name, place));
       };
     });
+    return proto;
   };
 
   // ================= ComUtil ================ //
@@ -464,174 +465,185 @@
       }
     };
 
-    _addEmitterAction('Chain', ChainProto);
-    $xj.add('Chain', xjQuery.CLASS.makeClass(ChainProto));
-    var ChainProto = {
+    var nextTick = typeof setImmediate == 'function' ? function(fn) {
+      setImmediate(fn);
+    }: function(fn) {
+      setTimeout(fn, 0); // 4ms as W3C draft
+    }
 
-      initialize: function() {
-        this._emitter = new foonyah.Emitter();
-        this._mystart = false, this._dfd = $.Deferred();
-        this._position = 0, this._actors = [], this._witharg = [];
-        this._unstop = false;
-        this.push.apply(this, _toArray(arguments));
-      },
+    $xj.add('Chain', xjQuery.CLASS.makeClass(_addEmitterAction('Chain', {
+      initialize: initialize,
+      unstopping: unstopping,
+      withArg: withArg,
+      push: push,
+      start: start,
+      length: length,
+      isStarted: isStarted,
+      isEnded: isEnded,
+      _next: _next,
+      _next_unstop: _next_unstop,
+      _callback: _callback,
+      _callback_unstop: _callback_unstop,
+      _execNextFn: _execNextFn,
+      _error: _error
+    })));
 
-      nextTick: typeof setImmediate == 'function' ? function(fn) {
-        setImmediate(fn);
-      }: function(fn) {
-        setTimeout(fn, 0); // 4ms as W3C draft
-      },
+    function initialize() {
+      this._emitter = new foonyah.Emitter();
+      this._mystart = false, this._dfd = $.Deferred();
+      this._position = 0, this._actors = [], this._witharg = [];
+      this._unstop = false;
+      this.push.apply(this, _toArray(arguments));
+    }
 
-      unstopping: function(val) {
-        this._unstop = (val === true);
-        return this;
-      },
+    function unstopping(val) {
+      this._unstop = (val === true);
+      return this;
+    }
 
-      withArg: function() {
-        this._witharg = this._witharg.concat(_toArray(arguments));
-        return this;
-      },
+    function withArg() {
+      this._witharg = this._witharg.concat(_toArray(arguments));
+      return this;
+    }
 
-      push: function() {
-        var actors = _toArray(arguments);
-        if(this.unstop)
-          for( var i = 0; i < actors.length; i++)
-            this._next_unstop(actors[i]);
-        else
-          for( var i = 0; i < actors.length; i++)
-            this._next(actors[i]);
-        return this;
-      },
+    function push() {
+      var actors = _toArray(arguments);
+      if(this.unstop)
+        for( var i = 0; i < actors.length; i++)
+          this._next_unstop(actors[i]);
+      else
+        for( var i = 0; i < actors.length; i++)
+          this._next(actors[i]);
+      return this;
+    }
 
-      start: function() {
+    function start() {
 
-        // return promise
-        this._mystart = true;
-        if(this._actors.length == 0)
-          return this._dfd.resolve().promise();
+      // return promise
+      this._mystart = true;
+      if(this._actors.length == 0)
+        return this._dfd.resolve().promise();
 
+      var args = _toArray(arguments);
+      this._actors[this._position].apply(this, args);
+      this.trigger(ChainConst.Event.Start);
+
+      return this._dfd.promise();
+
+    }
+
+    function length() {
+      return this._actors.length;
+    }
+
+    function isStarted() {
+      return this._mystart === true;
+    }
+
+    function isEnded() {
+      return this._mystart === true
+        && (this._actors.length == 0 || this._position == this._actors.length - 1);
+    }
+
+    function _next(fn) {
+      var self = this;
+      this._actors.push(function() {
         var args = _toArray(arguments);
-        this._actors[this._position].apply(this, args);
-        this.trigger(ChainConst.Event.Start);
-
-        return this._dfd.promise();
-
-      },
-
-      length: function() {
-        return this._actors.length;
-      },
-
-      isStarted: function() {
-        return this._mystart === true;
-      },
-
-      isEnded: function() {
-        return this._mystart === true
-          && (this._actors.length == 0 || this._position == this._actors.length - 1);
-      },
-
-      _next: function(fn) {
-        var self = this;
-        this._actors.push(function() {
-          var args = _toArray(arguments);
-          if(args.length == 0)
-            args = [null];
-          var err = args.shift();
-          fn.apply(self, [err].concat(self._witharg).concat(args).concat(
-            self._callback()));
-        });
-      },
-
-      _next_unstop: function(fn) {
-        var self = this;
-        this._actors.push(function() {
-          var args = _toArray(arguments);
-          if(args.length == 0)
-            args = [null];
-          var err = args.shift();
-          fn.apply(self, [err].concat(self._witharg).concat(args).concat(
-            self._callback_unstop()));
-        });
-      },
-
-      _callback: function() {
-        var self = this;
-        return function(err) { // first argument is always err.
-          var args = _toArray(arguments);
-          if(err)
-            return self._error.apply(self, args);
-          self.nextTick(self._execNextFn(args));
-        };
-      },
-
-      _callback_unstop: function() {
-        var self = this;
-        return function(err) { // first argument is always err.
-          var args = _toArray(arguments);
-          self.nextTick(self._execNextFn(args));
-        };
-      },
-
-      _execNextFn: function(args) {
-
-        var self = this;
         if(args.length == 0)
           args = [null];
+        var err = args.shift();
+        fn.apply(self, [err].concat(self._witharg).concat(args).concat(
+          self._callback()));
+      });
+    }
 
-        // for debug
-        //console.log('[Chain] Prepare' + self.position + '/' + self.actors.length);
+    function _next_unstop(fn) {
+      var self = this;
+      this._actors.push(function() {
+        var args = _toArray(arguments);
+        if(args.length == 0)
+          args = [null];
+        var err = args.shift();
+        fn.apply(self, [err].concat(self._witharg).concat(args).concat(
+          self._callback_unstop()));
+      });
+    }
 
-        return function() {
-          try {
+    function _callback() {
+      var self = this;
+      return function(err) { // first argument is always err.
+        var args = _toArray(arguments);
+        if(err)
+          return self._error.apply(self, args);
+        nextTick(self._execNextFn(args));
+      };
+    }
 
-            // for debug
-            //console.log('[Chain] Execute' + self.position + '/' + self.actors.length);
+    function _callback_unstop() {
+      var self = this;
+      return function(err) { // first argument is always err.
+        var args = _toArray(arguments);
+        nextTick(self._execNextFn(args));
+      };
+    }
 
-            if(self._actors[++self._position])
-              return self._actors[self._position].apply(self, args);
-            if(self._actors.length == self._position) {
-              // avoid memory leak
-              this._actors = [];
-              return self.trigger(ChainConst.Event.End), self._dfd.resolve();
-            }
+    function _execNextFn(args) {
 
-            var mes = 'Duplicate next() call'
-              + ' may occurs somewhere in $xj.Chain.';
-            (typeof foonyah == 'undefined' ? console.log: foonyah.log)(mes);
+      var self = this;
+      if(args.length == 0)
+        args = [null];
 
-          } catch(e) {
+      // for debug
+      //console.log('[Chain] Prepare' + self.position + '/' + self.actors.length);
 
-            args = _toArray(args);
-            args.shift(), args.unshift(e);
-            return self._error.apply(self, args);
+      return function() {
+        try {
 
+          // for debug
+          //console.log('[Chain] Execute' + self.position + '/' + self.actors.length);
+
+          if(self._actors[++self._position])
+            return self._actors[self._position].apply(self, args);
+          if(self._actors.length == self._position) {
+            // avoid memory leak
+            this._actors = [];
+            return self.trigger(ChainConst.Event.End), self._dfd.resolve();
           }
-        };
-      },
 
-      _error: function(err) {
+          var mes = 'Duplicate next() call'
+            + ' may occurs somewhere in $xj.Chain.';
+          (typeof foonyah == 'undefined' ? console.log: foonyah.log)(mes);
 
-        var args = _toArray(arguments), actor = null;
-        this._dfd.reject(err);
+        } catch(e) {
 
-        var lpos = this._actors.length - 1;
-        if(this._position < lpos)
-          actor = this._actors[lpos];
+          args = _toArray(args);
+          args.shift(), args.unshift(e);
+          return self._error.apply(self, args);
 
-        // avoid memory leak
-        this._actors = [];
+        }
+      };
+    }
 
-        if(typeof actor == 'function')
-          return actor.apply(this, args);
-        else if(err instanceof Error)
-          throw err;
-        else
-          throw new Error(err);
+    function _error(err) {
 
-      }
+      var args = _toArray(arguments), actor = null;
+      this._dfd.reject(err);
 
-    };
+      var lpos = this._actors.length - 1;
+      if(this._position < lpos)
+        actor = this._actors[lpos];
+
+      // avoid memory leak
+      this._actors = [];
+
+      if(typeof actor == 'function')
+        return actor.apply(this, args);
+      else if(err instanceof Error)
+        throw err;
+      else
+        throw new Error(err);
+
+    }
 
   })($, xjQuery, $xj);
 
