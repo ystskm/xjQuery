@@ -1,11 +1,11 @@
 /*!
- * xjQuery JavaScript Library v0.3.3 rev.473
+ * xjQuery JavaScript Library v0.3.3 rev.482
  *
  * Copyright 2013 Yoshitaka Sakamoto <brilliantpenguin@gmail.com>
  * Released under the MIT license
  * http://github.com/ystskm/xjQuery/blob/master/LICENSE.md
  *
- * Date: 2014-04-11 08:42:24
+ * Date: 2014-04-14 13:05:03
  *//***/
 (function(has_win, has_mod) {
 
@@ -94,7 +94,7 @@
   var getters = {
 
     version: '0.3.3',
-    release: '2014-04-11 08:42:24',
+    release: '2014-04-14 13:05:03',
     workon: typeof global == 'undefined' ? 'Browser': 'Node',
     data_target: internalEmitter,
     event_target: internalEmitter,
@@ -302,6 +302,9 @@
           bws = mtc[2], bwsver = mtc[3];
           device = "robot";
         } else if(mtc = ua.match(/^(([\w\.]+)\/([\d\._-]+$)?)/)) {
+          bws = mtc[2], bwsver = mtc[3];
+          device = "robot";
+        } else if(/((Node)\.js.+)v(\d+\.\d+\.\d+)/) {
           bws = mtc[2], bwsver = mtc[3];
           device = "robot";
         }
