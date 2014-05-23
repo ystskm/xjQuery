@@ -1,9 +1,14 @@
 $(function() {
 
-  var CookieExpire = 365;
+  var Options = {
+    expires: 365,
+    path: null,
+    secure: location.protocol == 'https:'
+  };
 
   $xj.add('COOKIE', {
     cookie: cookie,
+    cookieOptions: cookieOptions,
     cookieExpire: cookieExpire
   });
 
@@ -11,16 +16,19 @@ $(function() {
   var place = 'ALONEcookie';
   $xj.data('readystatus', place, 'ready'), $xj.trigger('ready', place);
 
-  function cookie(name, value, storage) {
+  function cookie(name, value, options) {
 
     if(typeof value == 'boolean')
-      storage = value, value = undefined;
+      options = value, value = undefined;
 
-    var mode, options = {
-      storage: storage,
-      expires: CookieExpire
-    };
+    if(typeof options == 'boolean')
+      options = {
+        storage: options
+      }
 
+    options = $.extend({}, Options, options);
+
+    var mode = null;
     if(typeof value == 'undefined')
       mode = 'get';
 
@@ -67,43 +75,43 @@ $(function() {
         set += '; expires=' + date.toUTCString();
       }
 
-      set += options.path ? '; path=' + (options.path): '';
-      set += options.domain ? '; domain=' + (options.domain): '';
-      set += options.secure ? '; secure': '';
-      document.cookie = set;
-      return;
+      options.path && (set += '; path=' + options.path);
+      options.domain && (set += '; domain=' + options.domain);
+      options.secure && (set += '; secure');
+      return document.cookie = set;
 
     case 'get':
-
-      if(document.cookie && document.cookie != '') {
+      if(typeof document.cookie == 'string') {
 
         var cookies = document.cookie.split(';');
-
-        for( var i in cookies)
-          if(cookies[i].constructor != Function) {
-            var cookie = $.trim(cookies[i]);
-            if(cookie.substring(0, name.length + 1) == (name + '=')) {
-              var val = decodeURIComponent(cookie.substring(name.length + 1));
-              try {
-                return JSON.parse(val);
-              } catch(e) {
-                return val;
-              }
+        for( var i in cookies) {
+          var cookie = $.trim(cookies[i] || '');
+          if(cookie.substring(0, name.length + 1) == (name + '=')) {
+            var val = decodeURIComponent(cookie.substring(name.length + 1));
+            try {
+              return JSON.parse(val);
+            } catch(e) {
+              return val;
             }
           }
+        }
 
       }
+      return;
 
     }
   }
 
+  function cookieOptions(options) {
+    return $.extend(Options, options);
+  }
+
   function cookieExpire(value) {
-
     if(typeof value == 'number')
-      return CookieExpire = value;
-
-    return CookieExpire;
-
+      cookieOptions({
+        expires: value
+      });
+    return Options.expires;
   }
 
 });
