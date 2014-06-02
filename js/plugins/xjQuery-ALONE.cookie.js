@@ -3,7 +3,9 @@ $(function() {
   var Options = {
     expires: 365,
     path: null,
-    secure: location.protocol == 'https:'
+    secure: location.protocol == 'https:',
+    storage: false,
+    document: document
   };
 
   $xj.add('COOKIE', {
@@ -78,12 +80,12 @@ $(function() {
       options.path && (set += '; path=' + options.path);
       options.domain && (set += '; domain=' + options.domain);
       options.secure && (set += '; secure');
-      return document.cookie = set;
+      return options.document.cookie = set;
 
     case 'get':
-      if(typeof document.cookie == 'string') {
+      if(typeof options.document.cookie == 'string') {
 
-        var cookies = document.cookie.split(';');
+        var cookies = options.document.cookie.split(';');
         for( var i in cookies) {
           var cookie = $.trim(cookies[i] || '');
           if(cookie.substring(0, name.length + 1) == (name + '=')) {
