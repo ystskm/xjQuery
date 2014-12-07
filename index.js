@@ -11,7 +11,7 @@
   var _C = global.EXTERNAL_CONDITION || {}, Cons = {
     Version: _C.xjQuery_version,
     HttpRoot: _C.http_root || '/',
-    DircName: _C.xjQuery_dirname || 'xjQuery',
+    DircName: _C.xjQuery_dirname || 'xjquery',
     Xjquery: 'xjQuery',
     Js: 'js',
     Plugind: 'plugins'
@@ -40,19 +40,25 @@
 
   function svr(target, options) {
     options = mixin({}, options);
+
     if(target == 'root')
       target = options.withroot = 'root';
+
     if(options.withroot == true)
       options.withroot = 'root';
+
     return makePath(target, options);
   }
 
   function bws(target, options) {
     options = mixin({}, options);
+
     if(target == 'root')
       target = options.withroot = 'http_root';
+
     if(options.withroot == true)
       options.withroot = 'http_root';
+
     return makePath(target, options);
   }
 
