@@ -1,4 +1,12 @@
 /*!
+ * xjQuery JavaScript Library v0.6.3 rev.797
+ *
+ * Copyright 2013 Yoshitaka Sakamoto <brilliantpenguin@gmail.com>
+ * Released under the MIT license
+ * http://github.com/ystskm/xjQuery/blob/master/LICENSE.md
+ *
+ * Date: 2015-01-11 19:26:13
+ *//*!
  * xjQuery JavaScript Library v0.6.2 rev.796
  *
  * Copyright 2013 Yoshitaka Sakamoto <brilliantpenguin@gmail.com>
@@ -685,22 +693,13 @@
     (function($, xjQuery, $xj) {
 
       $xj.add('require', xjQuery.CLASS.makeClass({
-
         constant: constant,
         initialize: initialize,
         start: start,
         next: next,
         _listenFn: _listenFn,
         assign: assign,
-        load: load,
-
-        always: always,
-        done: done,
-        fail: fail,
-        then: then,
-        progress: progress,
-        promise: promise
-
+        load: load
       }));
 
       function constant(key) {
@@ -731,7 +730,6 @@
         }, options);
 
         this.chain = new $xj.Chain();
-        this.deferred = $.Deferred();
 
         this.finish = function(err, chainLast) {
           $.isFunction(self.options.finish) ? self.options.finish(err,
@@ -784,7 +782,6 @@
 
       function start(fn) {
         // return chain $.Deferred()
-        this.chain.push(this.deferred.resolve);
         return this.chain.push(fn || this.finish).start();
       }
 
@@ -1017,25 +1014,6 @@
           }
 
         }
-      }
-
-      function always() {
-        return this.deferred.always.apply(this.deferred, arguments);
-      }
-      function done() {
-        return this.deferred.done.apply(this.deferred, arguments);
-      }
-      function fail() {
-        return this.deferred.fail.apply(this.deferred, arguments);
-      }
-      function then() {
-        return this.deferred.then.apply(this.deferred, arguments);
-      }
-      function progress() {
-        return this.deferred.progress.apply(this.deferred, arguments);
-      }
-      function promise() {
-        return this.deferred.promise();
       }
 
     })($, xjQuery, $xj);
