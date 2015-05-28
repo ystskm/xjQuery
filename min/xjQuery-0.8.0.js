@@ -4,6 +4,14 @@
  * Copyright 2013 Yoshitaka Sakamoto <brilliantpenguin@gmail.com>
  * Released under the MIT license
  * http://github.com/ystskm/xjQuery/blob/master/LICENSE.md
+ *
+ * Date: 2015-05-28 18:24:37
+ *//*!
+ * xjQuery JavaScript Library v0.8.0 rev.819
+ *
+ * Copyright 2013 Yoshitaka Sakamoto <brilliantpenguin@gmail.com>
+ * Released under the MIT license
+ * http://github.com/ystskm/xjQuery/blob/master/LICENSE.md
  */
 /***/
 (function(has_win, has_mod) {
