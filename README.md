@@ -1,16 +1,16 @@
-#:: xjQuery ::
+# xjQuery
 > /eks-jay-kueri/
 
-##Abstract
+## Abstract
 #### Extend event engine for jQuery.
 
-##Size
+## Size
 #### 34kb (compressed to: 16kb)
 
-##Documents
+## Documents
 #### [http://liberty-technology.biz/foonyahstation/docs/xjQuery/](http://liberty-technology.biz/foonyahstation/docs/xjQuery/)
 
-##Install##
+## Install ##
 
 [On Browser]
 Use with <script/> tag
